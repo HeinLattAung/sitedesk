@@ -1,10 +1,11 @@
 # SiteDesk: business website + CMS (Laravel 13)
 
 A complete small-business website with its own admin panel, built with **PHP 8.4 / Laravel 13**,
-**Blade + Tailwind CSS** and **MySQL**, and deployed to a **Linux VPS (Ubuntu 24.04, Nginx, PHP-FPM)**
-with zero-downtime releases and GitHub Actions CI/CD.
+**Blade + Tailwind CSS** and **MySQL**, deployed to an **Ubuntu 24.04 server (Nginx, PHP-FPM, MySQL)**
+with zero-downtime releases and GitHub Actions CI. The same scripts provision any cloud VPS.
 
-> Live demo: _add your URL here after deploying_ · Deployment guide: [DEPLOYMENT.md](DEPLOYMENT.md)
+> Currently running on my own Ubuntu 24.04 server (WSL); a public demo will follow on a cloud VPS ·
+> Deployment guide: [DEPLOYMENT.md](DEPLOYMENT.md)
 
 ## Features
 
