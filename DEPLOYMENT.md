@@ -103,9 +103,11 @@ Setup:
 
 1. On your computer, create a key just for CI: `ssh-keygen -t ed25519 -f ci_key -N ""`
 2. Append `ci_key.pub` to `/home/deploy/.ssh/authorized_keys` on the server.
-3. In GitHub → Settings → Secrets → Actions, add:
+3. In GitHub → Settings → Secrets and variables → Actions, add these **secrets**:
    - `VPS_HOST`: the server IP
    - `VPS_SSH_KEY`: the contents of `ci_key` (the private key)
+
+4. On the **Variables** tab of the same page, add `DEPLOY_ENABLED` = `true` (until then, CI only runs the tests).
 
 Now `git push origin main` → tests → live in about a minute.
 
