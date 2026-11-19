@@ -135,7 +135,8 @@ dpkg-reconfigure -f noninteractive unattended-upgrades
 if [ -s /home/$DEPLOY_USER/.ssh/authorized_keys ]; then
     sed -i 's/^#\?PasswordAuthentication .*/PasswordAuthentication no/' /etc/ssh/sshd_config
     sed -i 's/^#\?PermitRootLogin .*/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
-    systemctl reload ssh
+    # Ubuntu 24.04 may socket-activate sshd, in which case reload can fail.
+    systemctl reload ssh 2>/dev/null || systemctl restart ssh
 fi
 
 cat <<DONE
