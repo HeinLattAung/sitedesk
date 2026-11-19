@@ -12,7 +12,7 @@
     <header class="sticky top-0 z-30 border-b border-stone-200 bg-white/90 backdrop-blur">
         <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
             <a href="{{ route('home') }}" class="flex items-center gap-2 font-semibold text-stone-900">
-                <span class="grid size-8 place-items-center rounded-lg bg-teal-700 text-sm text-white">S</span>
+                <span class="grid size-8 place-items-center rounded-lg bg-teal-700 text-sm text-white">{{ mb_substr(config('sitedesk.company'), 0, 1) }}</span>
                 {{ config('sitedesk.company') }}
             </a>
 
