@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $password = env('ADMIN_PASSWORD');
+        $password = config('sitedesk.admin.password');
 
         if (blank($password)) {
             if (app()->isProduction()) {
@@ -28,8 +28,8 @@ class DatabaseSeeder extends Seeder
         }
 
         $admin = User::updateOrCreate(
-            ['email' => env('ADMIN_EMAIL', 'admin@example.com')],
-            ['name' => env('ADMIN_NAME', 'Site Admin'), 'password' => $password],
+            ['email' => config('sitedesk.admin.email')],
+            ['name' => config('sitedesk.admin.name'), 'password' => $password],
         );
 
         $services = collect([
