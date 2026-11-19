@@ -47,6 +47,25 @@ DOMAIN=yourdomain.com bash server-setup.sh
 
 Write down the database password it prints at the end.
 
+### Using Oracle Cloud Always Free
+
+Oracle's free VM works the same way, with three differences:
+
+1. **Log in as `ubuntu`** (not root) and run the script with sudo:
+   `ssh ubuntu@IP`, then `sudo DOMAIN=yourname.duckdns.org bash server-setup.sh`.
+   The script copies the `ubuntu` user's SSH key to `deploy`.
+2. **Open ports 80 and 443 in the console:** Networking → Virtual Cloud Networks →
+   your VCN → Subnet → Default Security List → *Add Ingress Rules*:
+   source `0.0.0.0/0`, TCP, destination ports `80,443`.
+3. **Inside the server**, Oracle images use iptables rather than UFW. The script detects this
+   and opens 80/443 with `iptables` + `netfilter-persistent` instead of enabling UFW.
+
+The script also adds a 2 GB swap file, so `composer install` and `npm run build` don't run out
+of memory on the 1 GB micro VM.
+
+**Free domain:** [DuckDNS](https://www.duckdns.org) gives you `yourname.duckdns.org`. Point it at the VM's
+public IP, and Certbot can issue a real HTTPS certificate for it.
+
 ## 2. Create the production `.env` (once)
 
 ```bash

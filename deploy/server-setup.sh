@@ -19,6 +19,12 @@ DB_PASS="$(openssl rand -base64 24 | tr -d '/+=')"
 
 log() { printf '\n\033[1;32m==> %s\033[0m\n' "$*"; }
 
+log "Swap file (lets Composer/npm builds run on 1 GB RAM servers)"
+if ! swapon --show | grep -q .; then
+    fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+    echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
+
 log "System update + base packages"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y && apt-get upgrade -y
@@ -52,8 +58,13 @@ if ! id "$DEPLOY_USER" &>/dev/null; then
     adduser --disabled-password --gecos "" "$DEPLOY_USER"
     usermod -aG www-data "$DEPLOY_USER"
     mkdir -p /home/$DEPLOY_USER/.ssh
-    # Reuse root's authorized key so you can `ssh deploy@server` right away.
-    cp /root/.ssh/authorized_keys /home/$DEPLOY_USER/.ssh/ 2>/dev/null || true
+    # Reuse the admin's authorized key so you can `ssh deploy@server` right away.
+    # (root on most VPSs; the `ubuntu` user on Oracle Cloud / AWS, via sudo.)
+    KEY_SRC=/root/.ssh/authorized_keys
+    if [ -n "${SUDO_USER:-}" ] && [ -s "/home/$SUDO_USER/.ssh/authorized_keys" ]; then
+        KEY_SRC="/home/$SUDO_USER/.ssh/authorized_keys"
+    fi
+    cp "$KEY_SRC" /home/$DEPLOY_USER/.ssh/authorized_keys 2>/dev/null || true
     chown -R $DEPLOY_USER:$DEPLOY_USER /home/$DEPLOY_USER/.ssh
     chmod 700 /home/$DEPLOY_USER/.ssh
 fi
@@ -102,11 +113,22 @@ cat > /etc/cron.d/$APP <<CRON
 CRON
 
 log "Firewall + SSH hardening"
-ufw default deny incoming
-ufw default allow outgoing
-ufw allow OpenSSH
-ufw allow 'Nginx Full'
-ufw --force enable
+if grep -qs 'REJECT' /etc/iptables/rules.v4; then
+    # Oracle Cloud images ship their own iptables rules (everything but SSH is
+    # rejected) and UFW conflicts with them, so open 80/443 in iptables instead.
+    # Ports must ALSO be allowed in the OCI subnet's Security List (console).
+    for port in 443 80; do
+        iptables -C INPUT -p tcp --dport $port -m state --state NEW -j ACCEPT 2>/dev/null \
+            || iptables -I INPUT 5 -p tcp --dport $port -m state --state NEW -j ACCEPT
+    done
+    netfilter-persistent save
+else
+    ufw default deny incoming
+    ufw default allow outgoing
+    ufw allow OpenSSH
+    ufw allow 'Nginx Full'
+    ufw --force enable
+fi
 systemctl enable --now fail2ban
 dpkg-reconfigure -f noninteractive unattended-upgrades
 # Key-only SSH, no root password login. Only applied if a key is installed.
