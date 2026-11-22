@@ -5,7 +5,7 @@ A complete small-business website with its own admin panel, built with **PHP 8.4
 with zero-downtime releases and GitHub Actions CI. The same scripts provision any cloud VPS.
 
 > Currently running on my own Ubuntu 24.04 server (WSL); a public demo will follow on a cloud VPS ·
-> Deployment guide: [DEPLOYMENT.md](DEPLOYMENT.md)
+> Deployment guide: [DEPLOYMENT.md](DEPLOYMENT.md) · QA report: [docs/QA-REPORT.md](docs/QA-REPORT.md)
 
 ## Features
 
@@ -34,7 +34,7 @@ with zero-downtime releases and GitHub Actions CI. The same scripts provision an
 Eloquent models, relationships, query scopes and model events · Form Request validation ·
 resource controllers and route-model binding by slug · `auth` / `guest` / `throttle` middleware ·
 queued notifications (database queue) · file storage on the `public` disk · cache ·
-anonymous Blade components and partials · factories and seeders · **22 feature tests** (PHPUnit).
+anonymous Blade components and partials · factories and seeders · **30 feature tests** (PHPUnit).
 
 ## Security
 
