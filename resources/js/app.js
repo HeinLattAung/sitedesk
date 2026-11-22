@@ -108,7 +108,7 @@ document.querySelectorAll('[data-dropzone]').forEach((zone) => {
     const input = zone.querySelector('input[type="file"]');
     const preview = zone.querySelector('[data-preview]');
     const empty = zone.querySelector('[data-empty]');
-    const name = zone.querySelector('[data-filename]');
+    const name = zone.parentElement.querySelector('[data-filename]');
     const show = (file) => {
         if (!file || !file.type.startsWith('image/')) return;
         preview.src = URL.createObjectURL(file);

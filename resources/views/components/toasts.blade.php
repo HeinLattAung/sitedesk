@@ -9,7 +9,7 @@
                         <x-icon :name="$type === 'success' ? 'check' : 'warning'" class="size-4" />
                     </span>
                     <p class="flex-1 pt-1 text-sm text-slate-700">{{ session($key) }}</p>
-                    <button type="button" data-toast-close class="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600" aria-label="Dismiss">
+                    <button type="button" data-toast-close class="rounded-lg p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-600" aria-label="Dismiss">
                         <x-icon name="x" class="size-4" />
                     </button>
                 </div>

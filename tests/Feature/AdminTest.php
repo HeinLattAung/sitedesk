@@ -159,6 +159,34 @@ class AdminTest extends TestCase
         $this->assertNotNull($inquiry->refresh()->read_at);
     }
 
+    public function test_renaming_a_published_post_keeps_its_url(): void
+    {
+        // Found in QA: renaming changed the slug, so old links returned 404.
+        $user = User::factory()->create();
+        $post = Post::factory()->for($user, 'author')->create(['title' => 'Original title']);
+
+        $this->actingAs($user)->put("/admin/posts/{$post->id}", ['title' => 'Better title', 'body' => $post->body, 'publish_now' => '1']);
+
+        $this->assertSame('original-title', $post->refresh()->slug);
+        $this->get('/blog/original-title')->assertOk()->assertSee('Better title');
+    }
+
+    public function test_switching_published_off_unpublishes_the_post(): void
+    {
+        // Found in QA: when the empty schedule field was not sent, the post stayed public.
+        $user = User::factory()->create();
+
+        foreach ([[], ['published_at' => '']] as $extra) {
+            $post = Post::factory()->for($user, 'author')->create();
+            $this->assertTrue($post->isPublished());
+
+            $this->actingAs($user)->put("/admin/posts/{$post->id}", ['title' => $post->title, 'body' => $post->body, ...$extra]);
+
+            $this->assertNull($post->refresh()->published_at);
+            $this->get("/blog/{$post->slug}")->assertNotFound();
+        }
+    }
+
     public function test_admin_post_filters_ignore_malformed_input(): void
     {
         $this->actingAs(User::factory()->create())

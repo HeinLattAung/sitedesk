@@ -2,6 +2,8 @@
     // Posts without a cover image get a branded gradient so the grid still looks designed.
     $gradients = ['from-brand-500 to-brand-800', 'from-slate-700 to-slate-950', 'from-brand-700 to-slate-900', 'from-accent-400 to-brand-700'];
     $gradient = $gradients[$post->id % count($gradients)];
+    // Heading level depends on the page: h2 directly under the blog's h1, h3 under a section h2.
+    $headingTag = $headingTag ?? 'h3';
 @endphp
 <article class="group h-full">
     <a href="{{ route('blog.show', $post) }}"
@@ -23,7 +25,7 @@
                 <span class="size-1 rounded-full bg-slate-300"></span>
                 {{ $post->readingMinutes() }} min read
             </p>
-            <h3 class="mt-2 font-semibold leading-snug text-slate-900 transition group-hover:text-brand-700">{{ $post->title }}</h3>
+            <{{ $headingTag }} class="mt-2 font-semibold leading-snug text-slate-900 transition group-hover:text-brand-700">{{ $post->title }}</{{ $headingTag }}>
             @if ($post->excerpt)
                 <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-600">{{ $post->excerpt }}</p>
             @endif

@@ -19,7 +19,7 @@
                         <span class="min-w-0 flex-1">
                             <span class="flex flex-wrap items-center gap-x-2 gap-y-1">
                                 <span class="text-sm {{ $inquiry->read_at ? 'text-slate-700' : 'font-semibold text-slate-900' }}">{{ $inquiry->name }}</span>
-                                <span class="text-xs text-slate-400">{{ $inquiry->email }}</span>
+                                <span class="text-xs text-slate-500">{{ $inquiry->email }}</span>
                                 @if ($inquiry->service)
                                     <span class="badge bg-slate-100 text-slate-600">{{ $inquiry->service->title }}</span>
                                 @endif
@@ -27,12 +27,12 @@
                             </span>
                             <span class="mt-1 line-clamp-2 block text-sm text-slate-500">{{ $inquiry->message }}</span>
                         </span>
-                        <span class="shrink-0 text-xs text-slate-400" title="{{ $inquiry->created_at->format('j M Y, H:i') }}">{{ $inquiry->created_at->diffForHumans() }}</span>
+                        <span class="shrink-0 text-xs text-slate-500" title="{{ $inquiry->created_at->format('j M Y, H:i') }}">{{ $inquiry->created_at->diffForHumans() }}</span>
                     </a>
                 </li>
             @empty
                 <li class="px-6 py-16 text-center">
-                    <span class="mx-auto grid size-14 place-items-center rounded-2xl bg-slate-100 text-slate-400"><x-icon name="inbox" class="size-7" /></span>
+                    <span class="mx-auto grid size-14 place-items-center rounded-2xl bg-slate-100 text-slate-500"><x-icon name="inbox" class="size-7" /></span>
                     <h2 class="mt-4 font-semibold text-slate-900">{{ $filter === 'unread' ? 'All caught up!' : 'No inquiries yet' }}</h2>
                     <p class="mt-1 text-sm text-slate-500">{{ $filter === 'unread' ? 'You have read every message.' : 'New messages from the contact form will appear here.' }}</p>
                 </li>

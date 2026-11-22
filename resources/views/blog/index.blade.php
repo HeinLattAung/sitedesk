@@ -37,7 +37,7 @@
         @else
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($posts as $i => $post)
-                    <div data-reveal data-reveal-delay="{{ ($i % 3) * 80 }}">@include('blog._card', ['post' => $post])</div>
+                    <div data-reveal data-reveal-delay="{{ ($i % 3) * 80 }}">@include('blog._card', ['post' => $post, 'headingTag' => 'h2'])</div>
                 @endforeach
             </div>
             <div class="mt-12">{{ $posts->links() }}</div>

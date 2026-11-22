@@ -16,7 +16,7 @@
         </nav>
         <form method="GET" class="relative md:w-72" role="search">
             @if ($status) <input type="hidden" name="status" value="{{ $status }}"> @endif
-            <x-icon name="search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <x-icon name="search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
             <input type="search" name="q" value="{{ $search }}" placeholder="Search by title…" class="input py-2 pl-9 text-sm" aria-label="Search posts">
         </form>
     </div>
@@ -24,7 +24,7 @@
     <div class="card mt-6 overflow-hidden">
         @if ($posts->isEmpty())
             <div class="px-6 py-16 text-center">
-                <span class="mx-auto grid size-14 place-items-center rounded-2xl bg-slate-100 text-slate-400"><x-icon name="document" class="size-7" /></span>
+                <span class="mx-auto grid size-14 place-items-center rounded-2xl bg-slate-100 text-slate-500"><x-icon name="document" class="size-7" /></span>
                 <h2 class="mt-4 font-semibold text-slate-900">{{ $search !== '' || $status ? 'No posts match this filter' : 'No posts yet' }}</h2>
                 <p class="mt-1 text-sm text-slate-500">Write your first article to start building your blog.</p>
                 <a href="{{ route('admin.posts.create') }}" class="btn btn-primary mt-6"><x-icon name="plus" class="size-4" /> New post</a>
@@ -51,7 +51,7 @@
                                 <td class="whitespace-nowrap px-5 py-4">
                                     @include('admin.posts._status', ['post' => $post])
                                     @if ($post->published_at)
-                                        <p class="mt-1 text-xs text-slate-400">{{ $post->published_at->format('j M Y') }}</p>
+                                        <p class="mt-1 text-xs text-slate-500">{{ $post->published_at->format('j M Y') }}</p>
                                     @endif
                                 </td>
                                 <td class="hidden px-5 py-4 text-slate-600 md:table-cell">{{ $post->author->name }}</td>
@@ -59,11 +59,11 @@
                                 <td class="whitespace-nowrap px-5 py-4">
                                     <div class="flex justify-end gap-1">
                                         @if ($post->isPublished())
-                                            <a href="{{ route('blog.show', $post) }}" target="_blank" class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700" title="View on website" aria-label="View on website">
+                                            <a href="{{ route('blog.show', $post) }}" target="_blank" class="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700" title="View on website" aria-label="View on website">
                                                 <x-icon name="eye" class="size-4" />
                                             </a>
                                         @endif
-                                        <a href="{{ route('admin.posts.edit', $post) }}" class="rounded-lg p-2 text-slate-400 transition hover:bg-brand-50 hover:text-brand-700" title="Edit" aria-label="Edit">
+                                        <a href="{{ route('admin.posts.edit', $post) }}" class="rounded-lg p-2 text-slate-500 transition hover:bg-brand-50 hover:text-brand-700" title="Edit" aria-label="Edit">
                                             <x-icon name="pencil" class="size-4" />
                                         </a>
                                     </div>

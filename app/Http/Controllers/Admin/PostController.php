@@ -72,11 +72,13 @@ class PostController extends Controller
      */
     private function attributes(PostRequest $request, ?Post $post = null): array
     {
-        $data = $request->safe()->only(['title', 'excerpt', 'body', 'published_at']);
+        $data = $request->safe()->only(['title', 'excerpt', 'body']);
 
-        if ($request->boolean('publish_now')) {
-            $data['published_at'] = $post?->isPublished() ? $post->published_at : now();
-        }
+        // Always set published_at explicitly, so "Published" switched off reliably
+        // unpublishes (draft, or scheduled if a future date was given).
+        $data['published_at'] = $request->boolean('publish_now')
+            ? ($post?->isPublished() ? $post->published_at : now())
+            : $request->validated('published_at');
 
         $old = $post?->cover_image;
 

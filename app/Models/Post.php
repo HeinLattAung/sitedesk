@@ -22,9 +22,13 @@ class Post extends Model
 
     protected static function booted(): void
     {
-        // Keep the slug in sync with the title, and unique across posts.
+        // Keep the slug in sync with the title while the post is unpublished. Once it has
+        // been public, the URL stays fixed so shared links and search results keep working.
         static::saving(function (Post $post) {
-            if (blank($post->slug) || $post->isDirty('title')) {
+            $original = $post->getOriginal('published_at');
+            $wasPublic = $post->exists && $original !== null && $post->asDateTime($original)->lte(now());
+
+            if (blank($post->slug) || ($post->isDirty('title') && ! $wasPublic)) {
                 $post->slug = static::uniqueSlug($post->title, $post->id);
             }
         });

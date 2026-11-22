@@ -54,7 +54,7 @@
                                 </span>
                                 <span class="block truncate text-sm text-slate-500">{{ $inquiry->message }}</span>
                             </span>
-                            <span class="shrink-0 text-xs text-slate-400">{{ $inquiry->created_at->diffForHumans(short: true) }}</span>
+                            <span class="shrink-0 text-xs text-slate-500">{{ $inquiry->created_at->diffForHumans(short: true) }}</span>
                         </a>
                     </li>
                 @empty
@@ -77,7 +77,7 @@
                         <a href="{{ route('admin.posts.edit', $post) }}" class="flex items-center justify-between gap-3 px-5 py-3.5 transition hover:bg-slate-50">
                             <span class="min-w-0">
                                 <span class="block truncate text-sm font-medium text-slate-800">{{ $post->title }}</span>
-                                <span class="text-xs text-slate-400">Updated {{ $post->updated_at->diffForHumans() }}</span>
+                                <span class="text-xs text-slate-500">Updated {{ $post->updated_at->diffForHumans() }}</span>
                             </span>
                             @include('admin.posts._status', ['post' => $post])
                         </a>

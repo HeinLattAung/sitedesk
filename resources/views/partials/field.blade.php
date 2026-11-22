@@ -10,7 +10,7 @@
             {{ $label }} @if (! empty($required))<span class="text-red-500">*</span>@endif
         </label>
         @if (! empty($maxlength))
-            <span id="{{ $name }}-count" class="text-xs text-slate-400 tabular-nums"></span>
+            <span id="{{ $name }}-count" class="text-xs text-slate-500 tabular-nums"></span>
         @endif
     </div>
     @if ($type === 'textarea')
