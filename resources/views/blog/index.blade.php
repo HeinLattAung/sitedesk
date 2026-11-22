@@ -31,7 +31,7 @@
             <div class="mx-auto max-w-md py-16 text-center">
                 <span class="mx-auto grid size-14 place-items-center rounded-2xl bg-slate-100 text-slate-400"><x-icon name="search" class="size-7" /></span>
                 <h2 class="mt-5 text-lg font-semibold text-slate-900">No posts found</h2>
-                <p class="mt-2 text-slate-600">Try a different word, or browse all articles.</p>
+                <p class="mt-2 text-slate-600">{{ $search !== '' ? 'Try a different word, or browse all articles.' : 'There are no articles on this page.' }}</p>
                 <a href="{{ route('blog.index') }}" class="btn btn-secondary mt-6">View all posts</a>
             </div>
         @else

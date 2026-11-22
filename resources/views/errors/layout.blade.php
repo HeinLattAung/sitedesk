@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
     <title>@yield('code') · @yield('title') · {{ config('sitedesk.company') }}</title>
+    @include('partials.head-meta')
     @vite(['resources/css/app.css'])
 </head>
 <body class="min-h-screen bg-white font-sans text-slate-700 antialiased">

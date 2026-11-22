@@ -79,4 +79,11 @@ class PublicSiteTest extends TestCase
     {
         $this->get('/up')->assertOk();
     }
+
+    public function test_malformed_query_strings_do_not_crash(): void
+    {
+        // Regression (found in QA): ?q[]=x caused a 500 error.
+        $this->get('/blog?q[]=x')->assertOk();
+        $this->get('/blog?page=99')->assertOk()->assertSee('There are no articles on this page.');
+    }
 }

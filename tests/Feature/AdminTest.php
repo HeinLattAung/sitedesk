@@ -158,4 +158,23 @@ class AdminTest extends TestCase
 
         $this->assertNotNull($inquiry->refresh()->read_at);
     }
+
+    public function test_admin_post_filters_ignore_malformed_input(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get('/admin/posts?q[]=x&status[]=draft')
+            ->assertOk();
+    }
+
+    public function test_admin_pages_escape_user_input(): void
+    {
+        $inquiry = Inquiry::factory()->create(['name' => '<script>alert(1)</script>', 'message' => '<img src=x onerror=alert(1)>']);
+
+        foreach (['/admin', '/admin/inquiries', "/admin/inquiries/{$inquiry->id}"] as $url) {
+            $this->actingAs(User::factory()->create())->get($url)
+                ->assertOk()
+                ->assertDontSee('<script>alert(1)</script>', false)
+                ->assertDontSee('<img src=x onerror', false);
+        }
+    }
 }

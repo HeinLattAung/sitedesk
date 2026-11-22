@@ -10,7 +10,8 @@ class BlogController extends Controller
 {
     public function index(Request $request): View
     {
-        $search = trim((string) $request->query('q', ''));
+        // is_string guard: ?q[]=x would otherwise crash with "Array to string conversion".
+        $search = is_string($q = $request->query('q')) ? trim($q) : '';
 
         $posts = Post::published()
             ->with('author')

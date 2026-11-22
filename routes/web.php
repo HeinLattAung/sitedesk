@@ -13,13 +13,13 @@ Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/contact', [ContactController::class, 'create'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])
-    ->middleware('throttle:5,1') // max 5 submissions per minute per IP
+    ->middleware('throttle:contact') // 5 per minute per IP (see AppServiceProvider)
     ->name('contact.store');
 
 // Authentication
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
-    Route::post('/login', [LoginController::class, 'store'])->middleware('throttle:5,1');
+    Route::post('/login', [LoginController::class, 'store'])->middleware('throttle:login');
 });
 Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
 

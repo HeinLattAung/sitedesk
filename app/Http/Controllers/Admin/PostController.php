@@ -14,8 +14,8 @@ class PostController extends Controller
 {
     public function index(Request $request): View
     {
-        $status = $request->query('status');
-        $search = trim((string) $request->query('q', ''));
+        $status = in_array($request->query('status'), ['published', 'scheduled', 'draft'], true) ? $request->query('status') : null;
+        $search = is_string($q = $request->query('q')) ? trim($q) : '';
 
         $posts = Post::with('author')
             ->when($status === 'draft', fn ($q) => $q->whereNull('published_at'))

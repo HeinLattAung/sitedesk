@@ -29,4 +29,9 @@ class ContactRequest extends FormRequest
     {
         return ['website.prohibited' => 'Your message could not be sent.'];
     }
+
+    public function attributes(): array
+    {
+        return ['service_id' => 'service', 'name' => 'your name'];
+    }
 }

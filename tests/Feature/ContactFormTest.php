@@ -93,4 +93,24 @@ class ContactFormTest extends TestCase
         $this->post('/contact', $this->validData())->assertStatus(429);
         $this->assertDatabaseCount('inquiries', 5);
     }
+
+    public function test_contact_limit_does_not_block_staff_login(): void
+    {
+        // Regression (found in QA): routes shared one throttle counter per IP.
+        Notification::fake();
+        $user = \App\Models\User::factory()->create(['password' => 'secret-pass']);
+
+        for ($i = 0; $i < 6; $i++) {
+            $this->post('/contact', $this->validData());
+        }
+
+        $this->post('/login', ['email' => $user->email, 'password' => 'secret-pass'])
+            ->assertRedirect(route('admin.dashboard'));
+    }
+
+    public function test_invalid_service_error_uses_friendly_name(): void
+    {
+        $this->post('/contact', $this->validData(['service_id' => 'abc']))
+            ->assertSessionHasErrors(['service_id' => 'The selected service is invalid.']);
+    }
 }
