@@ -25,6 +25,15 @@ class ContactFormTest extends TestCase
         ];
     }
 
+    public function test_contact_form_fields_start_empty(): void
+    {
+        // Regression: a $value variable from the page leaked into the form inputs.
+        $html = $this->get('/contact')->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression('/<input id="name" name="name" type="text" value=""/', $html);
+        $this->assertMatchesRegularExpression('/<textarea id="message"[^>]*>\s*<\/textarea>/', $html);
+    }
+
     public function test_visitor_can_send_an_inquiry_and_owner_is_notified(): void
     {
         Notification::fake();

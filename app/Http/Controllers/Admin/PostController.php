@@ -15,15 +15,25 @@ class PostController extends Controller
     public function index(Request $request): View
     {
         $status = $request->query('status');
+        $search = trim((string) $request->query('q', ''));
 
         $posts = Post::with('author')
             ->when($status === 'draft', fn ($q) => $q->whereNull('published_at'))
             ->when($status === 'published', fn ($q) => $q->published())
+            ->when($status === 'scheduled', fn ($q) => $q->where('published_at', '>', now()))
+            ->when($search !== '', fn ($q) => $q->where('title', 'like', "%{$search}%"))
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
-        return view('admin.posts.index', compact('posts', 'status'));
+        $counts = [
+            null => Post::count(),
+            'published' => Post::published()->count(),
+            'scheduled' => Post::where('published_at', '>', now())->count(),
+            'draft' => Post::whereNull('published_at')->count(),
+        ];
+
+        return view('admin.posts.index', compact('posts', 'status', 'search', 'counts'));
     }
 
     public function create(): View

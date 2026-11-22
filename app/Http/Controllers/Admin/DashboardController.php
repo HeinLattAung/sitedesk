@@ -20,6 +20,7 @@ class DashboardController extends Controller
                 'Unread inquiries' => Inquiry::unread()->count(),
             ],
             'inquiries' => Inquiry::with('service')->latest()->take(5)->get(),
+            'posts' => Post::latest('updated_at')->take(4)->get(),
         ]);
     }
 }

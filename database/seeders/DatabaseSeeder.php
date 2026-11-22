@@ -49,8 +49,35 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        if (! app()->isProduction() && Inquiry::count() === 0) {
-            Inquiry::factory(3)->sequence(fn ($seq) => ['service_id' => $services[$seq->index]->id])->create();
+        // Example inquiries for local development and demos (SITEDESK_DEMO=true on a demo server).
+        if ((! app()->isProduction() || config('sitedesk.demo')) && Inquiry::count() === 0) {
+            $this->demoInquiries($services);
+        }
+    }
+
+    private function demoInquiries($services): void
+    {
+        $examples = [
+            ['Nattaya Srisuk', 'nattaya@example.com', '081 234 5678', 0, 'Hi, we run a small dental clinic in Silom and need a new bilingual (Thai/English) website with online appointment requests. Could you send a quote and timeline?', 2, false],
+            ['Daniel Chen', 'daniel.chen@example.com', null, 1, 'We sell handmade ceramics and want to move from Instagram to our own online store with card and PromptPay payments. Around 80 products to start.', 6, false],
+            ['Somchai Rattanakul', 'somchai@example.com', '089 765 4321', 3, 'Our WordPress site has become very slow and Google shows a security warning. Can you take a look this week?', 26, true],
+            ['Emily Parker', 'emily@example.com', null, 2, 'Our company website is hosted overseas and keeps going down. Do you offer hosting with backups and SSL included?', 75, true],
+        ];
+
+        foreach ($examples as [$name, $email, $phone, $serviceIndex, $message, $hoursAgo, $read]) {
+            $inquiry = Inquiry::create([
+                'name' => $name,
+                'email' => $email,
+                'phone' => $phone,
+                'service_id' => $services[$serviceIndex]->id,
+                'message' => $message,
+                'ip_address' => '203.0.113.'.rand(2, 250), // documentation IP range
+            ]);
+            $inquiry->forceFill([
+                'created_at' => now()->subHours($hoursAgo),
+                'updated_at' => now()->subHours($hoursAgo),
+                'read_at' => $read ? now()->subHours($hoursAgo - 1) : null,
+            ])->save();
         }
     }
 

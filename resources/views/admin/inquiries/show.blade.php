@@ -1,23 +1,49 @@
-<x-layouts.admin title="Inquiry">
-    <a href="{{ route('admin.inquiries.index') }}" class="text-sm text-teal-700 hover:underline">&larr; All inquiries</a>
+<x-layouts.admin :title="'Message from '.$inquiry->name" :back="route('admin.inquiries.index')"
+                 :subtitle="'Received '.$inquiry->created_at->format('j F Y \a\t H:i').' · '.$inquiry->created_at->diffForHumans()">
+    <x-slot:actions>
+        <a href="mailto:{{ $inquiry->email }}?subject={{ rawurlencode('Re: your inquiry to '.config('sitedesk.company')) }}" class="btn btn-primary">
+            <x-icon name="reply" class="size-4" /> Reply by email
+        </a>
+    </x-slot:actions>
 
-    <article class="mt-4 max-w-3xl rounded-xl border border-stone-200 bg-white p-6">
-        <dl class="grid gap-4 text-sm sm:grid-cols-2">
-            <div><dt class="text-stone-500">Name</dt><dd class="font-medium text-stone-900">{{ $inquiry->name }}</dd></div>
-            <div><dt class="text-stone-500">Email</dt><dd><a href="mailto:{{ $inquiry->email }}" class="text-teal-700 hover:underline">{{ $inquiry->email }}</a></dd></div>
-            <div><dt class="text-stone-500">Phone</dt><dd>{{ $inquiry->phone ?? '—' }}</dd></div>
-            <div><dt class="text-stone-500">Service</dt><dd>{{ $inquiry->service?->title ?? 'Not specified' }}</dd></div>
-            <div><dt class="text-stone-500">Received</dt><dd>{{ $inquiry->created_at->format('j M Y, H:i') }}</dd></div>
-            <div><dt class="text-stone-500">IP address</dt><dd>{{ $inquiry->ip_address ?? '—' }}</dd></div>
-        </dl>
-        <div class="mt-6 whitespace-pre-line border-t border-stone-100 pt-6 text-stone-800">{{ $inquiry->message }}</div>
-    </article>
+    <div class="grid gap-6 lg:grid-cols-3">
+        <article class="card p-6 sm:p-8 lg:col-span-2">
+            <div class="flex items-center gap-4">
+                <span class="grid size-12 place-items-center rounded-full bg-brand-600 text-lg font-semibold text-white">{{ mb_strtoupper(mb_substr($inquiry->name, 0, 1)) }}</span>
+                <div>
+                    <p class="font-semibold text-slate-900">{{ $inquiry->name }}</p>
+                    <p class="text-sm text-slate-500">{{ $inquiry->email }}</p>
+                </div>
+            </div>
+            <div class="mt-6 whitespace-pre-line rounded-xl bg-slate-50 p-5 leading-relaxed text-slate-800 ring-1 ring-slate-100">{{ $inquiry->message }}</div>
+        </article>
 
-    <div class="mt-6 flex items-center gap-4">
-        <a href="mailto:{{ $inquiry->email }}?subject={{ rawurlencode('Re: your inquiry') }}" class="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800">Reply by email</a>
-        <form method="POST" action="{{ route('admin.inquiries.destroy', $inquiry) }}" onsubmit="return confirm('Delete this inquiry?')">
-            @csrf @method('DELETE')
-            <button class="text-sm text-red-600 hover:underline">Delete</button>
-        </form>
+        <aside class="space-y-6">
+            <div class="card p-6">
+                <h2 class="font-semibold text-slate-900">Details</h2>
+                <dl class="mt-4 space-y-4 text-sm">
+                    @foreach ([
+                        ['mail', 'Email', $inquiry->email],
+                        ['phone', 'Phone', $inquiry->phone ?? '—'],
+                        ['briefcase', 'Service', $inquiry->service?->title ?? 'Not specified'],
+                        ['calendar', 'Received', $inquiry->created_at->format('j M Y, H:i')],
+                        ['desktop', 'IP address', $inquiry->ip_address ?? '—'],
+                    ] as [$icon, $label, $value])
+                        <div class="flex gap-3">
+                            <x-icon :name="$icon" class="mt-0.5 size-4 text-slate-400" />
+                            <div class="min-w-0">
+                                <dt class="text-xs text-slate-500">{{ $label }}</dt>
+                                <dd class="break-words font-medium text-slate-800">{{ $value }}</dd>
+                            </div>
+                        </div>
+                    @endforeach
+                </dl>
+            </div>
+            <form method="POST" action="{{ route('admin.inquiries.destroy', $inquiry) }}"
+                  data-confirm="The message from {{ $inquiry->name }} will be permanently deleted." data-confirm-title="Delete this inquiry?" data-confirm-button="Delete inquiry">
+                @csrf @method('DELETE')
+                <button class="btn btn-danger-ghost w-full ring-1 ring-red-200"><x-icon name="trash" class="size-4" /> Delete inquiry</button>
+            </form>
+        </aside>
     </div>
 </x-layouts.admin>

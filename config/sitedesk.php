@@ -10,6 +10,9 @@ return [
     // New contact-form inquiries are emailed here (queued).
     'notify_email' => env('SITEDESK_NOTIFY_EMAIL', env('MAIL_FROM_ADDRESS')),
 
+    // Seed example inquiries on a demo server (they are always seeded locally).
+    'demo' => (bool) env('SITEDESK_DEMO', false),
+
     // Admin account created by `php artisan db:seed`. Read through config(), not
     // env(), so it still works after `php artisan config:cache` in production.
     'admin' => [

@@ -1,18 +1,31 @@
 @php
     $type = $type ?? 'text';
     $value = old($name, $value ?? '');
-    $classes = 'mt-1 w-full rounded-lg border bg-white px-3 py-2 focus:border-teal-600 focus:outline-none '
-        .($errors->has($name) ? 'border-red-400' : 'border-stone-300');
+    $hasError = $errors->has($name);
+    $classes = 'input'.($hasError ? ' input-error' : '');
 @endphp
 <div>
-    <label for="{{ $name }}" class="block text-sm font-medium text-stone-700">
-        {{ $label }} @if (! empty($required))<span class="text-red-500">*</span>@endif
-    </label>
+    <div class="flex items-baseline justify-between">
+        <label for="{{ $name }}" class="label">
+            {{ $label }} @if (! empty($required))<span class="text-red-500">*</span>@endif
+        </label>
+        @if (! empty($maxlength))
+            <span id="{{ $name }}-count" class="text-xs text-slate-400 tabular-nums"></span>
+        @endif
+    </div>
     @if ($type === 'textarea')
-        <textarea id="{{ $name }}" name="{{ $name }}" rows="{{ $rows ?? 5 }}" class="{{ $classes }}" @required(! empty($required))>{{ $value }}</textarea>
+        <textarea id="{{ $name }}" name="{{ $name }}" rows="{{ $rows ?? 5 }}" class="{{ $classes }} resize-y leading-relaxed"
+                  placeholder="{{ $placeholder ?? '' }}" @required(! empty($required))
+                  @if (! empty($maxlength)) maxlength="{{ $maxlength }}" data-counter="{{ $name }}-count" @endif
+                  @if (! empty($autosize)) data-autosize @endif
+                  @if ($hasError) aria-invalid="true" aria-describedby="{{ $name }}-error" @endif>{{ $value }}</textarea>
     @else
-        <input id="{{ $name }}" name="{{ $name }}" type="{{ $type }}" value="{{ $value }}" class="{{ $classes }}" @required(! empty($required))>
+        <input id="{{ $name }}" name="{{ $name }}" type="{{ $type }}" value="{{ $value }}" class="{{ $classes }}"
+               placeholder="{{ $placeholder ?? '' }}" autocomplete="{{ $autocomplete ?? 'on' }}" @required(! empty($required))
+               @if ($hasError) aria-invalid="true" aria-describedby="{{ $name }}-error" @endif>
     @endif
-    @if (! empty($hint)) <p class="mt-1 text-xs text-stone-500">{{ $hint }}</p> @endif
-    @error($name) <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+    @if (! empty($hint) && ! $hasError) <p class="hint">{{ $hint }}</p> @endif
+    @error($name)
+        <p id="{{ $name }}-error" class="error"><x-icon name="warning" class="size-4" /> {{ $message }}</p>
+    @enderror
 </div>
